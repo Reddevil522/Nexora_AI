@@ -1,0 +1,11 @@
+{
+  "type": "module",
+  "dependencies": {
+    "@google/genai": "^2.3.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
+    "express": "^5.1.0",
+    "mongoose": "^9.6.2",
+    "nodemon": "^3.1.14"
+  }
+}

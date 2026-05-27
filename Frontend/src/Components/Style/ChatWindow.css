@@ -1,0 +1,257 @@
+/* ═══════════════════════════════════════════
+   ChatWindow — Nexora AI
+   ═══════════════════════════════════════════ */
+
+.chat-window {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100%;
+    background-color: #101010;
+    overflow: hidden;
+}
+
+/* ── Header ── */
+.chat-window__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    height: 52px;
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.07);
+    flex-shrink: 0;
+}
+
+/* ── Logo — fades in when sidebar collapses to rail ── */
+.chat-window__logo {
+    /* height: 30px;
+    width: auto; */
+    width: 120px;
+    height: 50px;
+    object-fit: contain;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+}
+
+.chat-window__logo--hidden {
+    opacity: 0;
+    transform: translateX(-4px);
+    width: 0;
+    overflow: hidden;
+}
+
+.chat-window__logo--visible {
+    opacity: 1;
+    transform: translateX(0);
+    width: auto;
+}
+
+/* ── Profile button ── */
+.chat-window__profile-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background-color: #5b5bd6;
+    color: #fff;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.chat-window__profile-btn:hover {
+    background-color: #6e6ef0;
+    transform: scale(1.05);
+}
+
+/* ── Message Body ── */
+.chat-window__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 0 12px;
+    display: flex;
+    flex-direction: column;
+    /* scrollbar-width: thin;
+    scrollbar-color: #2e2e2e transparent; */
+}
+
+.chat-window__body::-webkit-scrollbar {
+    width: 4px;
+}
+
+.chat-window__body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.chat-window__body::-webkit-scrollbar-thumb {
+    background: #2e2e2e;
+    border-radius: 99px;
+}
+
+/* ── Loading indicator ── */
+.chat-window__loading {
+    display: flex;
+    justify-content: flex-start;
+    padding: 8px 24px 4px;
+    animation: cw-fadein 0.2s ease;
+}
+
+/* ── Error banner ── */
+.chat-window__error {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 24px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: rgba(248, 113, 113, 0.1);
+    border: 0.5px solid rgba(248, 113, 113, 0.25);
+    color: #f87171;
+    font-size: 13.5px;
+    animation: cw-fadein 0.2s ease;
+}
+
+.chat-window__error span {
+    flex: 1;
+}
+
+.chat-window__error button {
+    border: none;
+    background: transparent;
+    color: #f87171;
+    cursor: pointer;
+    padding: 2px 4px;
+    font-size: 14px;
+    opacity: 0.7;
+    transition: opacity 0.15s;
+}
+
+.chat-window__error button:hover {
+    opacity: 1;
+}
+
+/* ── Input Area ── */
+.chat-window__input-area {
+    padding: 12px 20px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.chat-window__input-box {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 680px;
+    height: 48px;
+    padding: 0 6px 0 18px;
+    border-radius: 24px;
+    background-color: #252525;
+    border: 0.5px solid rgba(255, 255, 255, 0.1);
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.chat-window__input-box:focus-within {
+    border-color: rgba(255, 255, 255, 0.22);
+    background-color: #2a2a2a;
+}
+
+.chat-window__input-box--disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.chat-window__input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    color: #e0e0e0;
+    font-size: 14.5px;
+    outline: none;
+    caret-color: #8080ff;
+}
+
+.chat-window__input::placeholder {
+    color: #555;
+}
+
+.chat-window__input:disabled {
+    cursor: not-allowed;
+}
+
+.chat-window__send-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #555;
+    font-size: 14px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.chat-window__send-btn--active {
+    background: #5b5bd6;
+    color: #fff;
+}
+
+.chat-window__send-btn--active:hover {
+    background: #6e6ef0;
+    transform: scale(1.05);
+}
+
+.chat-window__send-btn:disabled {
+    cursor: not-allowed;
+}
+
+.chat-window__disclaimer {
+    font-size: 11.5px;
+    color: #404040;
+    margin: 0;
+    text-align: center;
+}
+
+/* ── Animations ── */
+@keyframes cw-fadein {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .chat-window__header {
+        padding: 0 12px;
+    }
+
+    .chat-window__input-area {
+        padding: 10px 12px 14px;
+    }
+
+    .chat-window__body {
+        padding: 16px 0 8px;
+    }
+
+    /* Always show logo on mobile since sidebar is a drawer */
+    .chat-window__logo--hidden {
+        opacity: 1;
+        width: auto;
+        transform: none;
+    }
+}

@@ -1,0 +1,453 @@
+/* ═══════════════════════════════════════════
+   Sidebar — Nexora AI
+   Two states:
+     --open       260px  full panel with labels
+     --collapsed   52px  icon-only rail (ChatGPT style)
+   ═══════════════════════════════════════════ */
+
+/* ── CSS variables for widths ── */
+:root {
+    --sidebar-open-width: 260px;
+    --sidebar-collapsed-width: 52px;
+    --sidebar-transition: 0.26s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Root ── */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    /* background-color: #171717; */
+    color: #b4b4b4;
+    overflow: hidden;
+    flex-shrink: 0;
+    transition: width var(--sidebar-transition);
+    /* Prevent content flash during transition */
+    will-change: width;
+    background-color: #171717;
+}
+
+/* ── Open state ── */
+.sidebar--open {
+    width: var(--sidebar-open-width);
+}
+
+/* ── Collapsed state — icon rail only ── */
+.sidebar--collapsed {
+    width: var(--sidebar-collapsed-width);
+}
+
+/* ── Elements hidden in collapsed state ── */
+.sidebar--collapsed .sidebar__hide-when-collapsed {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    pointer-events: none;
+    /* Fade out slightly faster than the width collapses */
+    transition: opacity 0.12s ease, width 0.26s ease;
+}
+
+/* Fade in when opening */
+.sidebar--open .sidebar__hide-when-collapsed {
+    opacity: 1;
+    width: auto;
+    transition: opacity 0.18s ease 0.1s, width 0.26s ease;
+}
+
+/* ── Scoped scrollbar ── */
+.sidebar__history::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar__history::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar__history::-webkit-scrollbar-thumb {
+    background: #2e2e2e;
+    border-radius: 99px;
+}
+
+/* ────────────────────────
+   HEADER
+   ──────────────────────── */
+.sidebar__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    height: 52px;
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
+    background-color: #171717;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+/* Collapsed: center the toggle button */
+.sidebar--collapsed .sidebar__header {
+    justify-content: center;
+    padding: 0;
+}
+
+.sidebar__logo {
+    width: 120px;
+    height: 50px;
+    object-fit: contain;
+    flex-shrink: 0;
+    display: block;
+}
+
+/* Toggle / bars button */
+.sidebar__icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #666;
+    cursor: pointer;
+    font-size: 15px;
+    flex-shrink: 0;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sidebar__icon-btn:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: #e0e0e0;
+}
+
+/* ────────────────────────
+   ACTIONS (New chat / Search)
+   ──────────────────────── */
+.sidebar__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 8px 6px;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+/* Collapsed: center icons */
+.sidebar--collapsed .sidebar__actions {
+    padding: 10px 0 6px;
+    align-items: center;
+}
+
+.sidebar__action-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    height: 38px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #b0b0b0;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: left;
+    white-space: nowrap;
+    transition: background 0.15s ease, color 0.15s ease;
+    position: relative;
+}
+
+.sidebar__action-btn:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: #e8e8e8;
+}
+
+.sidebar__action-btn i {
+    font-size: 16px;
+    width: 18px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+/* Collapsed: icon-only, centered */
+.sidebar--collapsed .sidebar__action-btn {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+.sidebar--collapsed .sidebar__action-btn i {
+    width: auto;
+}
+
+/* ────────────────────────
+   THREAD HISTORY
+   Fully hidden when collapsed
+   ──────────────────────── */
+.sidebar__history {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 6px 8px;
+    min-height: 0;
+}
+
+.sidebar__section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #555;
+    padding: 6px 10px 4px;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.sidebar__thread-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.sidebar__thread-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 36px;
+    padding: 0 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: background 0.15s ease;
+}
+
+.sidebar__thread-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.sidebar__thread-item--active {
+    background: rgba(255, 255, 255, 0.09);
+}
+
+.sidebar__thread-item--deleting {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.sidebar__thread-title {
+    flex: 1;
+    font-size: 13.5px;
+    color: #b4b4b4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 24px;
+    transition: color 0.15s ease;
+}
+
+.sidebar__thread-item:hover .sidebar__thread-title,
+.sidebar__thread-item--active .sidebar__thread-title {
+    color: #e0e0e0;
+}
+
+/* ── Delete button ── */
+.sidebar__delete-btn {
+    position: absolute;
+    right: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: #666;
+    font-size: 12px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.sidebar__thread-item:hover .sidebar__delete-btn {
+    opacity: 1;
+}
+
+.sidebar__delete-btn:hover {
+    background: rgba(248, 113, 113, 0.12);
+    color: #f87171;
+}
+
+/* ── Empty & Skeleton states ── */
+.sidebar__empty-state {
+    font-size: 13px;
+    color: #444;
+    text-align: center;
+    padding: 24px 16px;
+    margin: 0;
+}
+
+.sidebar__thread-skeleton {
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    animation: sidebar-shimmer 1.4s ease-in-out infinite;
+    margin-bottom: 2px;
+}
+
+.sidebar__thread-skeleton:nth-child(2) {
+    animation-delay: 0.1s;
+    width: 85%;
+}
+
+.sidebar__thread-skeleton:nth-child(3) {
+    animation-delay: 0.2s;
+    width: 70%;
+}
+
+.sidebar__thread-skeleton:nth-child(4) {
+    animation-delay: 0.3s;
+    width: 90%;
+}
+
+@keyframes sidebar-shimmer {
+
+    0%,
+    100% {
+        opacity: 0.4;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
+}
+
+/* ────────────────────────
+   FOOTER
+   ──────────────────────── */
+.sidebar__footer {
+    padding: 8px;
+    border-top: 0.5px solid rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+/* Collapsed: center avatar */
+.sidebar--collapsed .sidebar__footer {
+    padding: 8px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.sidebar__footer-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    height: 40px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #888;
+    font-size: 13.5px;
+    cursor: pointer;
+    text-align: left;
+    white-space: nowrap;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sidebar__footer-btn:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #d0d0d0;
+}
+
+/* Collapsed: just show avatar, no extra padding */
+.sidebar--collapsed .sidebar__footer-btn {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.sidebar__avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #e8630a;
+    /* Warm orange — matches reference image */
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+    letter-spacing: 0.02em;
+}
+
+/* ────────────────────────
+   MOBILE — full drawer behaviour
+   ──────────────────────── */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 200;
+        /* On mobile, open = full drawer, closed = fully hidden (no rail) */
+        width: var(--sidebar-open-width) !important;
+        height: 100dvh;
+        transform: translateX(-100%);
+        transition: transform var(--sidebar-transition),
+            box-shadow 0.26s ease;
+    }
+
+    .sidebar--open {
+        transform: translateX(0);
+        box-shadow: 8px 0 40px rgba(0, 0, 0, 0.7);
+    }
+
+    .sidebar--collapsed {
+        transform: translateX(-100%);
+    }
+
+    /* Always show labels on mobile (drawer is all-or-nothing) */
+    .sidebar--collapsed .sidebar__hide-when-collapsed {
+        opacity: 1;
+        width: auto;
+        pointer-events: auto;
+    }
+
+    /* Dark overlay behind the drawer */
+    .sidebar__backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 199;
+        background: rgba(0, 0, 0, 0.6);
+        /* backdrop-filter: blur(2px); */
+        animation: backdrop-fadein 0.22s ease;
+    }
+}
+
+/* Desktop: no backdrop needed */
+@media (min-width: 769px) {
+    .sidebar__backdrop {
+        display: none;
+    }
+}
+
+@keyframes backdrop-fadein {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}

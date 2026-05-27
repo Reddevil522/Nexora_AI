@@ -1,0 +1,66 @@
+/* ═══════════════════════════════════════════
+   App.css — Nexora AI
+   Global resets and root layout only.
+   Component-specific styles live in their
+   own scoped CSS files.
+   ═══════════════════════════════════════════ */
+
+/* ── Box-sizing reset ── */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ── Root document ── */
+html,
+body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    /* App handles its own scroll regions */
+    background-color: #171717;
+
+    /* Base typography — distinctive, clean, readable */
+    font-family: 'DM Sans', 'Segoe UI', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+
+    /* Base text color — set on body only, not * */
+    color: #d0d0d0;
+}
+
+/* ── App shell — flex row: sidebar | chatwindow ── */
+.app {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background-color: #171717;
+}
+
+/* ── Prevent text selection on UI chrome ── */
+button,
+label {
+    user-select: none;
+}
+
+/* ── Focus visible ring (accessibility) ──
+   Replaces default blue outline with a subtle white ring
+   that suits the dark theme */
+:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.25);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* ── Google Font import for DM Sans ──
+   DM Sans: geometric, warm, modern — pairs beautifully
+   with the clean dark UI without being generic */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
