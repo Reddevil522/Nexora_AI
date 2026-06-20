@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import ThemeToggle from "../Components/ThemeToggle.jsx";
 import "./Home.css";
 
 /* ─── Reduced-motion helper ─── */
@@ -205,7 +206,7 @@ export default function Home() {
                     <div className="nav-actions">
                         <Link className="btn-ghost" to="/login">Log in</Link>
                         <Link className="btn-primary" to="/signup">Get started <IconArrowRight width={14} height={14} /></Link>
-
+                        <ThemeToggle />
                     </div>
                     <button className="hamburger" aria-label={mobileOpen ? "Close menu" : "Open menu"} aria-expanded={mobileOpen} onClick={() => setMobileOpen(o => !o)}>
                         {mobileOpen ? <IconClose /> : <IconMenu />}
@@ -218,7 +219,7 @@ export default function Home() {
                     <div className="mobile-menu-btns">
                         <Link className="btn-ghost" to="/login">Log in</Link>
                         <Link className="btn-primary" to="/signup">Get started</Link>
-
+                        <ThemeToggle />
                     </div>
 
                 </div>

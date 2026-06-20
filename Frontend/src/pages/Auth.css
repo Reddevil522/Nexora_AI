@@ -23,6 +23,29 @@
     --font-mono: 'IBM Plex Mono', 'SF Mono', Consolas, monospace;
 }
 
+[data-theme="light"] {
+    --ink: #f5f0e8;
+    --ink-2: #eae4d8;
+    --ink-3: #ddd7c8;
+    --paper: #1a1208;
+    --muted: #5a4f3e;
+    --muted-2: #9b8e7c;
+    --amber: #c96d00;
+    --amber-bright: #e07d00;
+    --amber-soft: rgba(180, 100, 0, 0.10);
+    --amber-line: rgba(180, 100, 0, 0.32);
+    --line: rgba(30, 20, 10, 0.10);
+    --line-strong: rgba(30, 20, 10, 0.18);
+}
+
+*,
+*::before,
+*::after {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-duration: 0.22s;
+    transition-timing-function: ease;
+}
+
 *:focus-visible {
     outline: 2px solid var(--amber);
     outline-offset: 3px;
@@ -73,7 +96,7 @@
     width: 560px;
     height: 360px;
     transform: translate(-50%, -50%);
-    background: rgba(255, 157, 77, .10);
+    background: var(--amber-soft);
     filter: blur(120px);
     border-radius: 50%;
     pointer-events: none;

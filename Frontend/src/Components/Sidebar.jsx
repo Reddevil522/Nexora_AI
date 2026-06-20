@@ -3,6 +3,7 @@ import { useContext, useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { MyContext } from "../MyContext.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
+import { useTheme } from "../context/ThemeContext.jsx";
 import { threadService } from "../services/threadService.js";
 import { v1 as uuidv1 } from "uuid";
 import { toastSuccess, toastError } from "../utils/toast.js";
@@ -16,6 +17,8 @@ const IconPen = (p) => (<svg {...iconProps} {...p} aria-hidden="true"><path d="M
 const IconSearch = (p) => (<svg {...iconProps} {...p} aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.4-4.4" /></svg>);
 const IconTrash = (p) => (<svg {...iconProps} width={13} height={13} {...p} aria-hidden="true"><path d="M4 7h16" /><path d="M9 7V4h6v3" /><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13" /></svg>);
 const IconLogout = (p) => (<svg {...iconProps} {...p} aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><path d="M16 17l5-5-5-5" /><path d="M21 12H9" /></svg>);
+const IconSun = (p) => (<svg {...iconProps} {...p} aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>);
+const IconMoon = (p) => (<svg {...iconProps} {...p} aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>);
 
 /* Nexus mark — same signature glyph used on Home */
 function NodeMark({ size = 18 }) {
@@ -46,6 +49,7 @@ function Sidebar() {
     const [isLoading, setIsLoading] = useState(false);
     const [deletingId, setDeletingId] = useState(null);
     const { user, logout } = useAuth();
+    const { theme, toggleTheme } = useTheme();
     const navigate = useNavigate();
 
     const getAllThreads = useCallback(async () => {
@@ -166,6 +170,15 @@ function Sidebar() {
                         <IconSearch />
                         <span className="sidebar__hide-when-collapsed">Search chats</span>
                     </button>
+                    <button
+                        className="sidebar__action-btn"
+                        onClick={toggleTheme}
+                        title={theme === "dark" ? "Light mode" : "Dark mode"}
+                        aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                    >
+                        {theme === "dark" ? <IconMoon /> : <IconSun />}
+                        <span className="sidebar__hide-when-collapsed">Toggle theme</span>
+                    </button>
                 </div>
 
                 {/* THREAD HISTORY */}
@@ -223,7 +236,10 @@ function Sidebar() {
                             {user?.name ? user.name.charAt(0).toUpperCase() : "N"}
                         </div>
                         <span className="sidebar__hide-when-collapsed sidebar__footer-label">
-                            <span>Logout</span>
+                            <span className="sidebar__footer-user">
+                                <span className="sidebar__footer-name">{user?.name || "User"}</span>
+                                <span className="sidebar__footer-hint">Sign out</span>
+                            </span>
                             <IconLogout width={14} height={14} />
                         </span>
                     </button>

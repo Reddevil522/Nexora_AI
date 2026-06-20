@@ -1,5 +1,6 @@
 import "./Style/ChatWindow.css";
 import Chat from "./Chat.jsx";
+import ThemeToggle from "./ThemeToggle.jsx";
 import { MyContext } from "../MyContext.jsx";
 import { useContext, useState, useEffect, useRef, useCallback } from "react";
 import { ScaleLoader } from "react-spinners";
@@ -114,11 +115,13 @@ function ChatWindow() {
                     <div className="chat-window__brand-icon"><NodeMark size={16} /></div>
                     <span className="chat-window__brand-name">Nexora AI</span>
                 </div>
-                <div className="chat-window__profile-chip" aria-label="User profile">
-                    <div className="chat-window__profile-avatar">
-                        {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
+                <div className="chat-window__header-right" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <div className="chat-window__profile-chip" aria-label="User profile">
+                        <div className="chat-window__profile-avatar">
+                            {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
+                        </div>
+                        <span className="chat-window__profile-name">{user?.name || "User"}</span>
                     </div>
-                    <span className="chat-window__profile-name">{user?.name || "User"}</span>
                 </div>
             </header>
 
