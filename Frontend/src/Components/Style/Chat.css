@@ -1,11 +1,7 @@
 /* ═══════════════════════════════════════════
-   Chat — Nexora AI
-   Message list, bubbles, code blocks
+   Chat — Nexora AI (matches Home design system)
    ═══════════════════════════════════════════ */
 
-/* ── Root scroll container ──
-   ChatWindow gives this flex: 1 + overflow-y: auto,
-   so .chat fills and scrolls correctly */
 .chat {
     display: flex;
     flex-direction: column;
@@ -13,18 +9,16 @@
     height: 100%;
 }
 
-/* ── Message list ── */
 .chat__messages {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
     width: 100%;
     max-width: 720px;
     margin: 0 auto;
     padding: 16px 20px 8px;
 }
 
-/* ── Message row ── */
 .chat__row {
     display: flex;
     align-items: flex-start;
@@ -45,30 +39,29 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: rgba(91, 91, 214, 0.2);
-    color: #8080f0;
-    font-size: 11px;
-    font-weight: 700;
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    background: var(--amber-soft);
+    border: 1px solid var(--amber-line);
     flex-shrink: 0;
     margin-top: 2px;
-    letter-spacing: 0;
 }
 
 /* ── Bubbles ── */
 .chat__bubble {
     line-height: 1.65;
-    font-size: 14.5px;
+    font-size: 15px;
+    font-family: var(--font-body);
 }
 
 /* User bubble */
 .chat__bubble--user {
-    background-color: #2a2a2a;
-    color: #e0e0e0;
-    padding: 10px 16px;
-    border-radius: 18px 18px 4px 18px;
+    background-color: var(--ink-2);
+    border: 1px solid var(--line-strong);
+    color: var(--paper);
+    padding: 11px 16px;
+    border-radius: 14px 14px 2px 14px;
     max-width: 520px;
     width: fit-content;
     margin: 0;
@@ -77,12 +70,11 @@
 
 /* AI bubble */
 .chat__bubble--ai {
-    color: #d0d0d0;
+    color: #d8d3c6;
     max-width: 620px;
     padding: 2px 0;
 }
 
-/* Markdown content within AI bubble */
 .chat__bubble--ai p {
     margin: 0 0 10px;
     line-height: 1.7;
@@ -95,21 +87,22 @@
 .chat__bubble--ai h1,
 .chat__bubble--ai h2,
 .chat__bubble--ai h3 {
-    color: #e8e8e8;
+    font-family: var(--font-display);
+    color: var(--paper);
     margin: 16px 0 6px;
     font-weight: 600;
 }
 
 .chat__bubble--ai h1 {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
 }
 
 .chat__bubble--ai h2 {
-    font-size: 1.05rem;
+    font-size: 1.08rem;
 }
 
 .chat__bubble--ai h3 {
-    font-size: 0.95rem;
+    font-size: 0.98rem;
 }
 
 .chat__bubble--ai ul,
@@ -126,23 +119,23 @@
 }
 
 .chat__bubble--ai a {
-    color: #818cf8;
+    color: var(--amber);
     text-decoration: underline;
     text-underline-offset: 3px;
 }
 
 .chat__bubble--ai a:hover {
-    color: #a5b4fc;
+    color: var(--amber-bright);
 }
 
 /* ── Inline code ── */
 .chat__inline-code {
-    background: rgba(255, 255, 255, 0.08);
-    color: #c4b5fd;
+    background: var(--amber-soft);
+    color: var(--amber-bright);
     padding: 2px 6px;
     border-radius: 4px;
     font-size: 13px;
-    font-family: "JetBrains Mono", "Fira Code", "Courier New", monospace;
+    font-family: var(--font-mono);
 }
 
 /* ── Code block ── */
@@ -150,7 +143,7 @@
     margin: 10px 0;
     border-radius: 10px;
     overflow: hidden;
-    border: 0.5px solid rgba(255, 255, 255, 0.07);
+    border: 1px solid var(--line-strong);
 }
 
 .chat__code-block {
@@ -163,14 +156,14 @@
     align-items: center;
     justify-content: space-between;
     padding: 8px 14px;
-    background: #1a1a1a;
-    border-bottom: 0.5px solid rgba(255, 255, 255, 0.07);
+    background: var(--ink-3);
+    border-bottom: 1px solid var(--line);
 }
 
 .chat__code-lang {
-    font-size: 11.5px;
-    font-family: "JetBrains Mono", "Fira Code", monospace;
-    color: #555;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--muted-2);
     text-transform: lowercase;
     letter-spacing: 0.03em;
 }
@@ -182,21 +175,18 @@
     gap: 5px;
     border: none;
     background: transparent;
-    color: #555;
-    font-size: 12px;
+    color: var(--muted-2);
+    font-family: var(--font-mono);
+    font-size: 11.5px;
     cursor: pointer;
-    padding: 3px 6px;
+    padding: 4px 7px;
     border-radius: 5px;
     transition: background 0.15s ease, color 0.15s ease;
 }
 
 .chat__copy-btn:hover {
-    background: rgba(255, 255, 255, 0.07);
-    color: #a0a0a0;
-}
-
-.chat__copy-btn i {
-    font-size: 12px;
+    background: var(--amber-soft);
+    color: var(--amber);
 }
 
 /* Code block body — highlight.js styles apply here */
@@ -205,12 +195,12 @@
     padding: 14px 16px;
     font-size: 13px;
     line-height: 1.6;
-    font-family: "JetBrains Mono", "Fira Code", "Courier New", monospace;
+    font-family: var(--font-mono);
     white-space: pre-wrap;
     word-break: break-word;
     border-radius: 0;
-    /* header handles the rounding */
-    background: #0d0d0d !important;
+    background: #08070600 !important;
+    background-color: rgba(0, 0, 0, 0.35) !important;
 }
 
 /* ── Empty / Welcome state ── */
@@ -226,22 +216,29 @@
 }
 
 .chat__empty-icon {
-    font-size: 32px;
-    color: #3a3a6e;
-    margin-bottom: 16px;
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    background: var(--ink-3);
+    border: 1px solid var(--amber-line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
     animation: chat-pulse 3s ease-in-out infinite;
 }
 
 .chat__empty-title {
-    font-size: 22px;
+    font-family: var(--font-display);
+    font-size: 24px;
     font-weight: 600;
-    color: #d0d0d0;
+    color: var(--paper);
     margin: 0 0 8px;
 }
 
 .chat__empty-subtitle {
     font-size: 14px;
-    color: #555;
+    color: var(--muted);
     margin: 0;
 }
 
@@ -262,11 +259,11 @@
 
     0%,
     100% {
-        opacity: 0.4;
+        opacity: 0.6;
     }
 
     50% {
-        opacity: 0.9;
+        opacity: 1;
     }
 }
 
@@ -274,7 +271,7 @@
 @media (max-width: 768px) {
     .chat__messages {
         padding: 12px 14px 8px;
-        gap: 4px;
+        gap: 6px;
     }
 
     .chat__bubble--user {

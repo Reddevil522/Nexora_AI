@@ -5,6 +5,22 @@ import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github-dark.css";
 
+const iconProps = { width: 13, height: 13, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round" };
+const IconCheck = (p) => (<svg {...iconProps} {...p} aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>);
+const IconCopy = (p) => (<svg {...iconProps} {...p} aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2" /><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" /></svg>);
+
+/* Nexus mark — same signature glyph used on Home */
+function NodeMark({ size = 13 }) {
+    return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 7L5 17M12 7L19 17M5 17H19" stroke="var(--amber)" strokeWidth="1.1" opacity=".55" />
+            <circle cx="12" cy="6" r="2.2" fill="var(--amber)" />
+            <circle cx="5" cy="18" r="2.2" fill="var(--amber)" />
+            <circle cx="19" cy="18" r="2.2" fill="var(--amber)" />
+        </svg>
+    );
+}
+
 /* ── Copy-to-clipboard button for code blocks ── */
 function CopyButton({ code }) {
     const [copied, setCopied] = useState(false);
@@ -25,11 +41,7 @@ function CopyButton({ code }) {
             onClick={handleCopy}
             aria-label={copied ? "Copied!" : "Copy code"}
         >
-            {copied ? (
-                <i className="fa-solid fa-check" aria-hidden="true" />
-            ) : (
-                <i className="fa-regular fa-copy" aria-hidden="true" />
-            )}
+            {copied ? <IconCheck /> : <IconCopy />}
             <span>{copied ? "Copied" : "Copy"}</span>
         </button>
     );
@@ -66,7 +78,7 @@ const markdownComponents = {
 function EmptyState() {
     return (
         <div className="chat__empty-state">
-            <div className="chat__empty-icon" aria-hidden="true">✦</div>
+            <div className="chat__empty-icon" aria-hidden="true"><NodeMark size={30} /></div>
             <h2 className="chat__empty-title">How can I help you today?</h2>
             <p className="chat__empty-subtitle">
                 Ask me anything — I'm here to help.
@@ -143,7 +155,7 @@ function Chat() {
                 {/* Last AI message — animated if actively streaming, static if loaded from history */}
                 {hasChats && lastAiMsg?.role === "assistant" && (
                     <div className="chat__row chat__row--ai">
-                        <div className="chat__avatar" aria-hidden="true">N</div>
+                        <div className="chat__avatar" aria-hidden="true"><NodeMark /></div>
                         <div className="chat__bubble chat__bubble--ai">
                             <ReactMarkdown
                                 rehypePlugins={[rehypeHighlight]}
@@ -178,7 +190,7 @@ function MessageBubble({ chat }) {
 
     return (
         <div className="chat__row chat__row--ai">
-            <div className="chat__avatar" aria-hidden="true">N</div>
+            <div className="chat__avatar" aria-hidden="true"><NodeMark /></div>
             <div className="chat__bubble chat__bubble--ai">
                 <ReactMarkdown
                     rehypePlugins={[rehypeHighlight]}

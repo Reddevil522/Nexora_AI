@@ -1,8 +1,33 @@
 import "./Style/Sidebar.css";
-import logo from "../assets/logo.png";
 import { useContext, useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { MyContext } from "../MyContext.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
+import { threadService } from "../services/threadService.js";
 import { v1 as uuidv1 } from "uuid";
+import { toastSuccess, toastError } from "../utils/toast.js";
+import { handleError } from "../utils/errorHandler.js";
+
+/* ── Icon set (matches Home.jsx style: stroke-based, no external deps) ── */
+const iconProps = { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round" };
+
+const IconBars = (p) => (<svg {...iconProps} {...p} aria-hidden="true"><path d="M3 6h18" /><path d="M3 12h18" /><path d="M3 18h18" /></svg>);
+const IconPen = (p) => (<svg {...iconProps} {...p} aria-hidden="true"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6" /><path d="M18.4 2.6a2 2 0 0 1 2.8 2.8L11 15.6l-4 1 1-4 10.4-10z" /></svg>);
+const IconSearch = (p) => (<svg {...iconProps} {...p} aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.4-4.4" /></svg>);
+const IconTrash = (p) => (<svg {...iconProps} width={13} height={13} {...p} aria-hidden="true"><path d="M4 7h16" /><path d="M9 7V4h6v3" /><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13" /></svg>);
+const IconLogout = (p) => (<svg {...iconProps} {...p} aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><path d="M16 17l5-5-5-5" /><path d="M21 12H9" /></svg>);
+
+/* Nexus mark — same signature glyph used on Home */
+function NodeMark({ size = 18 }) {
+    return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 7L5 17M12 7L19 17M5 17H19" stroke="var(--amber)" strokeWidth="1.1" opacity=".55" />
+            <circle cx="12" cy="6" r="2.2" fill="var(--amber)" />
+            <circle cx="5" cy="18" r="2.2" fill="var(--amber)" />
+            <circle cx="19" cy="18" r="2.2" fill="var(--amber)" />
+        </svg>
+    );
+}
 
 function Sidebar() {
     const {
@@ -20,13 +45,13 @@ function Sidebar() {
 
     const [isLoading, setIsLoading] = useState(false);
     const [deletingId, setDeletingId] = useState(null);
+    const { user, logout } = useAuth();
+    const navigate = useNavigate();
 
-    // Fetch all thread summaries from API
     const getAllThreads = useCallback(async () => {
         setIsLoading(true);
         try {
-            const response = await fetch("http://localhost:8080/api/thread");
-            const res = await response.json();
+            const res = await threadService.getThreads();
             const filteredData = res.map((thread) => ({
                 threadId: thread.threadId,
                 title: thread.title,
@@ -34,6 +59,7 @@ function Sidebar() {
             setAllThreads(filteredData);
         } catch (err) {
             console.error("Failed to fetch threads:", err);
+            toastError(err.userMessage || handleError(err) || "Unable to load conversations.");
         } finally {
             setIsLoading(false);
         }
@@ -52,48 +78,47 @@ function Sidebar() {
         setPrevChats([]);
     }, [setNewChat, setPrompt, setReply, setCurrThreadId, setPrevChats]);
 
-    // Load an existing thread's messages
     const changeThread = async (newThreadId) => {
         setCurrThreadId(newThreadId);
         try {
-            const response = await fetch(
-                `http://localhost:8080/api/thread/${newThreadId}`
-            );
-            const res = await response.json();
-            setPrevChats(res);
+            const res = await threadService.getThread(newThreadId);
+            setPrevChats(res.messages);
             setNewChat(false);
             setReply(null);
         } catch (err) {
             console.error("Failed to load thread:", err);
+            toastError(err.userMessage || handleError(err) || "Unable to load chat history.");
         }
-        // Auto-close sidebar on mobile after selecting a thread
         if (window.innerWidth <= 768) setIsSidebarOpen(false);
     };
 
-    // Delete a thread and reset UI if it was the active one
     const deleteThread = async (e, threadId) => {
         e.stopPropagation();
         setDeletingId(threadId);
         try {
-            await fetch(`http://localhost:8080/api/thread/${threadId}`, {
-                method: "DELETE",
-            });
+            await threadService.deleteThread(threadId);
             setAllThreads((prev) =>
                 prev.filter((thread) => thread.threadId !== threadId)
             );
             if (threadId === currThreadId) createNewChat();
+            toastSuccess("Conversation deleted successfully.");
         } catch (err) {
             console.error("Failed to delete thread:", err);
+            toastError(err.userMessage || handleError(err) || "Unable to delete conversation.");
         } finally {
             setDeletingId(null);
         }
+    };
+
+    const handleLogout = () => {
+        logout();
+        navigate("/home");
     };
 
     const toggle = () => setIsSidebarOpen((prev) => !prev);
 
     return (
         <>
-            {/* Mobile backdrop — only on small screens when open */}
             {isSidebarOpen && (
                 <div
                     className="sidebar__backdrop"
@@ -106,35 +131,23 @@ function Sidebar() {
                 className={`sidebar ${isSidebarOpen ? "sidebar--open" : "sidebar--collapsed"}`}
                 aria-label="Navigation sidebar"
             >
-                {/* ════════════════════════════
-                    HEADER
-                    Open:      logo + collapse btn
-                    Collapsed: toggle btn only (centered)
-                ════════════════════════════ */}
+                {/* HEADER */}
                 <div className="sidebar__header">
-                    {/* Logo — hidden when collapsed */}
-                    <img
-                        src={logo}
-                        alt="Nexora AI"
-                        className="sidebar__logo sidebar__hide-when-collapsed"
-                    />
-
-                    {/* Toggle / collapse button — always visible */}
+                    <div className="sidebar__brand sidebar__hide-when-collapsed">
+                        <div className="sidebar__brand-icon"><NodeMark size={16} /></div>
+                        <span className="sidebar__brand-name">Nexora AI</span>
+                    </div>
                     <button
                         className="sidebar__icon-btn"
                         onClick={toggle}
                         aria-label={isSidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
                         title={isSidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
                     >
-                        <i className="fa-solid fa-bars" aria-hidden="true" />
+                        <IconBars />
                     </button>
                 </div>
 
-                {/* ════════════════════════════
-                    ACTIONS — New Chat / Search
-                    Open:      icon + label
-                    Collapsed: icon only (centered), tooltip on hover
-                ════════════════════════════ */}
+                {/* ACTIONS */}
                 <div className="sidebar__actions">
                     <button
                         className="sidebar__action-btn"
@@ -142,24 +155,20 @@ function Sidebar() {
                         title="New chat"
                         aria-label="New chat"
                     >
-                        <i className="fa-solid fa-pen-to-square" aria-hidden="true" />
+                        <IconPen />
                         <span className="sidebar__hide-when-collapsed">New chat</span>
                     </button>
-
                     <button
                         className="sidebar__action-btn"
                         title="Search chats"
                         aria-label="Search chats"
                     >
-                        <i className="fa-solid fa-magnifying-glass" aria-hidden="true" />
+                        <IconSearch />
                         <span className="sidebar__hide-when-collapsed">Search chats</span>
                     </button>
                 </div>
 
-                {/* ════════════════════════════
-                    THREAD HISTORY
-                    Hidden entirely when collapsed
-                ════════════════════════════ */}
+                {/* THREAD HISTORY */}
                 <div className="sidebar__history sidebar__hide-when-collapsed">
                     <p className="sidebar__section-label">Recents</p>
 
@@ -177,8 +186,8 @@ function Sidebar() {
                                 <li
                                     key={thread.threadId}
                                     className={`sidebar__thread-item ${thread.threadId === currThreadId
-                                            ? "sidebar__thread-item--active"
-                                            : ""
+                                        ? "sidebar__thread-item--active"
+                                        : ""
                                         } ${deletingId === thread.threadId
                                             ? "sidebar__thread-item--deleting"
                                             : ""
@@ -194,7 +203,7 @@ function Sidebar() {
                                         aria-label={`Delete "${thread.title}"`}
                                         onClick={(e) => deleteThread(e, thread.threadId)}
                                     >
-                                        <i className="fa-solid fa-trash" aria-hidden="true" />
+                                        <IconTrash />
                                     </button>
                                 </li>
                             ))}
@@ -202,19 +211,21 @@ function Sidebar() {
                     )}
                 </div>
 
-                {/* ════════════════════════════
-                    FOOTER — Avatar
-                    Open:      avatar + label
-                    Collapsed: avatar only (centered)
-                ════════════════════════════ */}
+                {/* FOOTER */}
                 <div className="sidebar__footer">
                     <button
                         className="sidebar__footer-btn"
-                        aria-label="User profile"
-                        title="My Account"
+                        aria-label="Logout"
+                        title="Logout"
+                        onClick={handleLogout}
                     >
-                        <div className="sidebar__avatar" aria-hidden="true">N</div>
-                        <span className="sidebar__hide-when-collapsed">My Account</span>
+                        <div className="sidebar__avatar" aria-hidden="true">
+                            {user?.name ? user.name.charAt(0).toUpperCase() : "N"}
+                        </div>
+                        <span className="sidebar__hide-when-collapsed sidebar__footer-label">
+                            <span>Logout</span>
+                            <IconLogout width={14} height={14} />
+                        </span>
                     </button>
                 </div>
             </aside>

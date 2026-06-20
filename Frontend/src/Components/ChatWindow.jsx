@@ -1,9 +1,31 @@
 import "./Style/ChatWindow.css";
-import logochat from "../assets/logo.png";
 import Chat from "./Chat.jsx";
 import { MyContext } from "../MyContext.jsx";
 import { useContext, useState, useEffect, useRef, useCallback } from "react";
 import { ScaleLoader } from "react-spinners";
+import { chatService } from "../services/chatService.js";
+import { useAuth } from "../context/AuthContext.jsx";
+import { handleError } from "../utils/errorHandler.js";
+
+/* ── Icon set (matches Home.jsx style) ── */
+const iconProps = { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round" };
+
+const IconUser = (p) => (<svg {...iconProps} {...p} aria-hidden="true"><circle cx="12" cy="8" r="3.4" /><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6" /></svg>);
+const IconSend = (p) => (<svg {...iconProps} {...p} aria-hidden="true"><path d="M22 2L11 13" /><path d="M22 2l-7 20-4-9-9-4 20-7z" /></svg>);
+const IconAlert = (p) => (<svg {...iconProps} width={15} height={15} {...p} aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 8v5" /><path d="M12 16.5h.01" /></svg>);
+const IconClose = (p) => (<svg {...iconProps} width={13} height={13} {...p} aria-hidden="true"><path d="M18 6L6 18" /><path d="M6 6l12 12" /></svg>);
+
+/* Nexus mark — same signature glyph used on Home */
+function NodeMark({ size = 18 }) {
+    return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 7L5 17M12 7L19 17M5 17H19" stroke="var(--amber)" strokeWidth="1.1" opacity=".55" />
+            <circle cx="12" cy="6" r="2.2" fill="var(--amber)" />
+            <circle cx="5" cy="18" r="2.2" fill="var(--amber)" />
+            <circle cx="19" cy="18" r="2.2" fill="var(--amber)" />
+        </svg>
+    );
+}
 
 function ChatWindow() {
     const {
@@ -21,6 +43,7 @@ function ChatWindow() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const inputRef = useRef(null);
+    const { user } = useAuth();
 
     // Send prompt to API and receive reply
     const getReply = useCallback(async () => {
@@ -31,19 +54,12 @@ function ChatWindow() {
         setNewChat(false);
 
         try {
-            const response = await fetch("http://localhost:8080/api/chat", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: prompt, threadId: currThreadId }),
-            });
-
-            if (!response.ok) throw new Error(`Server error: ${response.status}`);
-
-            const res = await response.json();
+            const res = await chatService.sendMessage({ message: prompt, threadId: currThreadId });
             setReply(res.reply);
         } catch (err) {
             console.error("Chat API error:", err);
-            setError("Something went wrong. Please try again.");
+            const msg = err.userMessage || handleError(err) || "Unable to generate response. Please try again.";
+            setError(msg);
         } finally {
             setLoading(false);
         }
@@ -77,57 +93,37 @@ function ChatWindow() {
         <div className="chat-window">
             {/* ── Top Bar ── */}
             <header className="chat-window__header">
-                {/* Logo fades in when sidebar is collapsed (icon-rail mode) */}
-                <img
-                    src={logochat}
-                    alt="Nexora AI"
-                    className={`chat-window__logo ${isSidebarOpen
-                            ? "chat-window__logo--hidden"
-                            : "chat-window__logo--visible"
+                <div
+                    className={`chat-window__brand ${isSidebarOpen
+                        ? "chat-window__brand--hidden"
+                        : "chat-window__brand--visible"
                         }`}
                     aria-hidden={isSidebarOpen}
-                />
-
-                <button
-                    className="chat-window__profile-btn"
-                    aria-label="User profile"
                 >
-                    <i className="fa-solid fa-user" aria-hidden="true" />
-                </button>
+                    <div className="chat-window__brand-icon"><NodeMark size={16} /></div>
+                    <span className="chat-window__brand-name">Nexora AI</span>
+                </div>
+                <div className="chat-window__profile-chip" aria-label="User profile">
+                    <div className="chat-window__profile-avatar">
+                        {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
+                    </div>
+                    <span className="chat-window__profile-name">{user?.name || "User"}</span>
+                </div>
             </header>
 
             {/* ── Message Area ── */}
             <div className="chat-window__body">
                 <Chat text={reply} />
 
-                {loading && (
-                    <div
-                        className="chat-window__loading"
-                        aria-live="polite"
-                        aria-label="Generating response"
-                    >
-                        <ScaleLoader
-                            color="#6b6b6b"
-                            height={16}
-                            width={2}
-                            radius={2}
-                            margin={2}
-                        />
-                    </div>
-                )}
-
                 {error && !loading && (
                     <div className="chat-window__error" role="alert">
-                        <i
-                            className="fa-solid fa-circle-exclamation"
-                            aria-hidden="true"
-                        />
+                        <IconAlert />
                         <span>{error}</span>
                         <button
                             onClick={() => setError(null)}
                             aria-label="Dismiss error"
                         >
-                            <i className="fa-solid fa-xmark" aria-hidden="true" />
+                            <IconClose />
                         </button>
                     </div>
                 )}
@@ -135,7 +131,7 @@ function ChatWindow() {
 
             {/* ── Input Area ── */}
             <footer className="chat-window__input-area">
-                <div
+                {/* <div
                     className={`chat-window__input-box ${loading ? "chat-window__input-box--disabled" : ""
                         }`}
                 >
@@ -152,16 +148,58 @@ function ChatWindow() {
                     />
                     <button
                         className={`chat-window__send-btn ${prompt.trim() && !loading
-                                ? "chat-window__send-btn--active"
-                                : ""
+                            ? "chat-window__send-btn--active"
+                            : ""
                             }`}
                         onClick={getReply}
                         disabled={!prompt.trim() || loading}
                         aria-label="Send message"
                     >
-                        <i className="fa-solid fa-paper-plane" aria-hidden="true" />
+                        <IconSend width={14} height={14} />
                     </button>
+                </div> */}
+
+
+
+
+                <div
+                    className={`chat-window__input-box ${loading ? "chat-window__input-box--disabled" : ""
+                        }`}
+                >
+                    <input
+                        ref={inputRef}
+                        className="chat-window__input"
+                        placeholder="Ask anything…"
+                        value={prompt}
+                        onChange={(e) => setPrompt(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        disabled={loading}
+                        aria-label="Chat input"
+                        autoComplete="off"
+                    />
+                    {loading ? (
+                        <div className="chat-window__send-loader" aria-label="Sending">
+                            <ScaleLoader color="#ff9d4d" height={14} width={2} radius={2} margin={1.5} />
+                        </div>
+                    ) : (
+                        <button
+                            className={`chat-window__send-btn ${prompt.trim() ? "chat-window__send-btn--active" : ""
+                                }`}
+                            onClick={getReply}
+                            disabled={!prompt.trim()}
+                            aria-label="Send message"
+                        >
+                            <IconSend width={14} height={14} />
+                        </button>
+                    )}
                 </div>
+
+
+
+
+
+
+
                 <p className="chat-window__disclaimer">
                     Nexora can make mistakes. Check important info.
                 </p>

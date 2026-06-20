@@ -19,7 +19,7 @@ html,
 body {
     height: 100%;
     width: 100%;
-    overflow: hidden;
+    /* overflow: hidden; */
     /* App handles its own scroll regions */
     background-color: #171717;
 
@@ -45,22 +45,8 @@ body {
     background-color: #171717;
 }
 
-/* ── Prevent text selection on UI chrome ── */
-button,
-label {
-    user-select: none;
-}
-
-/* ── Focus visible ring (accessibility) ──
-   Replaces default blue outline with a subtle white ring
-   that suits the dark theme */
 :focus-visible {
     outline: 2px solid rgba(255, 255, 255, 0.25);
     outline-offset: 2px;
     border-radius: 4px;
 }
-
-/* ── Google Font import for DM Sans ──
-   DM Sans: geometric, warm, modern — pairs beautifully
-   with the clean dark UI without being generic */
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
