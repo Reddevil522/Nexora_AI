@@ -14,6 +14,7 @@ const IconUser = (p) => (<svg {...iconProps} {...p} aria-hidden="true"><circle c
 const IconSend = (p) => (<svg {...iconProps} {...p} aria-hidden="true"><path d="M22 2L11 13" /><path d="M22 2l-7 20-4-9-9-4 20-7z" /></svg>);
 const IconAlert = (p) => (<svg {...iconProps} width={15} height={15} {...p} aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 8v5" /><path d="M12 16.5h.01" /></svg>);
 const IconClose = (p) => (<svg {...iconProps} width={13} height={13} {...p} aria-hidden="true"><path d="M18 6L6 18" /><path d="M6 6l12 12" /></svg>);
+const IconMenu = (p) => (<svg {...iconProps} width={20} height={20} {...p} aria-hidden="true"><path d="M3 6h18" /><path d="M3 12h18" /><path d="M3 18h18" /></svg>);
 
 /* Nexus mark — same signature glyph used on Home */
 function NodeMark({ size = 18 }) {
@@ -38,6 +39,7 @@ function ChatWindow() {
         setPrevChats,
         setNewChat,
         isSidebarOpen,
+        setIsSidebarOpen,
     } = useContext(MyContext);
 
     const [loading, setLoading] = useState(false);
@@ -92,7 +94,16 @@ function ChatWindow() {
     return (
         <div className="chat-window">
             {/* ── Top Bar ── */}
-            <header className="chat-window__header">
+        <header className="chat-window__header">
+                {/* Hamburger — only visible on mobile */}
+                <button
+                    className="chat-window__hamburger"
+                    aria-label="Open sidebar"
+                    onClick={() => setIsSidebarOpen(true)}
+                >
+                    <IconMenu />
+                </button>
+
                 <div
                     className={`chat-window__brand ${isSidebarOpen
                         ? "chat-window__brand--hidden"

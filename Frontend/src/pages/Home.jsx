@@ -226,7 +226,7 @@ export default function Home() {
 
             {/* ── HERO ── */}
             <section className="hero">
-                <div className="hero-inner wrap" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "64px", alignItems: "center", width: "100%" }}>
+                <div className="hero-inner wrap hero-grid">
                     {/* Left */}
                     <FadeUp>
                         <div className="eyebrow">Powered by advanced AI</div>

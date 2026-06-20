@@ -96,6 +96,16 @@ a {
     padding: 0 24px;
     position: relative;
     z-index: 1;
+    width: 100%;
+}
+
+/* Hero 2-col grid — responsive override below */
+.hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+    width: 100%;
 }
 
 section {
@@ -297,10 +307,11 @@ section {
 
 /* ── HERO ── */
 .hero {
-    min-height: 100vh;
+    min-height: 100svh;
     display: flex;
     align-items: center;
     padding: 110px 24px 60px;
+    overflow-x: hidden;
 }
 
 .hero-inner {
@@ -1456,6 +1467,11 @@ section {
 
 /* ── RESPONSIVE ── */
 @media (max-width: 1024px) {
+    .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 48px;
+    }
+
     .hero-inner {
         grid-template-columns: 1fr;
     }
@@ -1472,9 +1488,16 @@ section {
         grid-template-columns: 1fr 1fr;
         gap: 36px;
     }
+
+    .showcase-inner {
+        gap: 48px;
+    }
 }
 
 @media (max-width: 768px) {
+    .wrap {
+        padding: 0 16px;
+    }
 
     .nav-links,
     .nav-actions {
@@ -1485,8 +1508,45 @@ section {
         display: block;
     }
 
+    .hero {
+        padding: 90px 16px 48px;
+        min-height: auto;
+    }
+
+    .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 36px;
+    }
+
     .hero-dashboard {
-        margin-top: 32px;
+        margin-top: 8px;
+    }
+
+    .hero-title {
+        font-size: clamp(32px, 8vw, 52px);
+    }
+
+    .hero-sub {
+        font-size: 15px;
+    }
+
+    .section-title {
+        font-size: clamp(26px, 6vw, 38px);
+    }
+
+    .section-header {
+        margin-bottom: 36px;
+    }
+
+    .features-section,
+    .showcase-section,
+    .stats-section,
+    .how-section,
+    .testi-section,
+    .pricing-section,
+    .faq-section {
+        padding-top: 64px;
+        padding-bottom: 64px;
     }
 
     .showcase-inner {
@@ -1527,12 +1587,36 @@ section {
         grid-template-columns: 1fr 1fr;
     }
 
+    .footer {
+        padding: 48px 16px 28px;
+    }
+
     .cta-box {
         padding: 48px 24px;
+    }
+
+    .cta-section {
+        padding: 60px 16px 72px;
+    }
+
+    .dashboard {
+        font-size: 13px;
     }
 }
 
 @media (max-width: 480px) {
+    .wrap {
+        padding: 0 14px;
+    }
+
+    .hero {
+        padding: 80px 14px 40px;
+    }
+
+    .hero-grid {
+        gap: 28px;
+    }
+
     .stats-grid {
         grid-template-columns: 1fr 1fr;
     }
@@ -1553,5 +1637,57 @@ section {
 
     .hero-title {
         letter-spacing: -.2px;
+        font-size: clamp(28px, 9vw, 44px);
+    }
+
+    .section-title {
+        font-size: clamp(22px, 7vw, 32px);
+    }
+
+    .feat-card {
+        padding: 22px 18px;
+    }
+
+    .testi-card,
+    .price-card {
+        padding: 22px 20px;
+    }
+
+    .stat-card {
+        padding: 28px 16px;
+    }
+
+    .stat-value {
+        font-size: 30px;
+    }
+
+    .cta-box {
+        padding: 36px 18px;
+    }
+
+    .faq-q {
+        font-size: 14px;
+        padding: 16px 16px;
+    }
+
+    .mobile-menu-btns {
+        flex-direction: column;
+    }
+
+    .nav-inner {
+        padding: 0 14px;
+    }
+}
+
+@media (max-width: 360px) {
+    .hero-title {
+        font-size: 26px;
+    }
+
+    .btn-hero-primary,
+    .btn-outline,
+    .btn-white {
+        padding: 12px 18px;
+        font-size: 14px;
     }
 }
