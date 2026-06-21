@@ -105,13 +105,13 @@ function Chat() {
         let index = 0;
 
         const interval = setInterval(() => {
-            setLatestReply((prev) => {
-                return prev + (index === 0 ? "" : " ") + words[index];
-            });
-
-            index++;
-
-            if (index >= words.length) {
+            if (index < words.length) {
+                const currentWord = words[index];
+                setLatestReply((prev) => {
+                    return prev + (index === 0 ? "" : " ") + currentWord;
+                });
+                index++;
+            } else {
                 clearInterval(interval);
             }
         }, 40); // typing speed
