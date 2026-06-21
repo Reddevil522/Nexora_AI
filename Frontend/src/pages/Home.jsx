@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import ThemeToggle from "../Components/ThemeToggle.jsx";
+import Footer from "../Components/Footer.jsx";
 import "./Home.css";
 
 /* ─── Reduced-motion helper ─── */
@@ -148,13 +149,6 @@ const FAQ_ITEMS = [
 ];
 
 const INTEGRATIONS = ["GitHub", "Slack", "Notion", "Figma", "Linear", "Google Drive"];
-
-const SOCIALS = [
-    { Icon: IconMail, label: "Email" },
-    { Icon: IconAt, label: "Mentions" },
-    { Icon: IconLink, label: "Community" },
-    { Icon: IconRss, label: "Changelog feed" },
-];
 
 /* ─── COMPONENT ─── */
 export default function Home() {
@@ -540,40 +534,7 @@ export default function Home() {
             </section>
 
             {/* ── FOOTER ── */}
-            <footer className="footer">
-                <div className="footer-inner">
-                    <div className="footer-grid">
-                        <div>
-                            <a href="#" className="logo" style={{ display: "inline-flex", marginBottom: 0 }}>
-                                <div className="logo-icon"><NodeMark size={16} /></div>
-                                Nexora AI
-                            </a>
-                            <p className="footer-brand-desc">Your intelligent AI companion for work, learning, and creation. Built for the next generation of builders.</p>
-                            <div className="social-row">
-                                {SOCIALS.map((s, i) => (
-                                    <button key={i} className="social-btn" aria-label={s.label}><s.Icon /></button>
-                                ))}
-                            </div>
-                        </div>
-                        {[
-                            { title: "Product", links: ["Features", "Pricing", "API", "Changelog"] },
-                            { title: "Company", links: ["About", "Careers", "Blog", "Press"] },
-                            { title: "Legal", links: ["Privacy policy", "Terms of service", "Cookie policy", "Security"] },
-                        ].map((col, i) => (
-                            <div key={i}>
-                                <div className="footer-col-title">{col.title}</div>
-                                <ul className="footer-links">
-                                    {col.links.map((l, j) => <li key={j}><a href="#">{l}</a></li>)}
-                                </ul>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="footer-bottom">
-                        <span className="footer-copy">© 2026 Nexora AI. All rights reserved.</span>
-                        <span className="footer-copy">Made for the next generation of builders</span>
-                    </div>
-                </div>
-            </footer>
+            <Footer />
         </>
     );
 }
