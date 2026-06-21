@@ -1,4 +1,5 @@
 import "dotenv/config";
+import { NEXORA_IDENTITY_PROMPT } from "./prompts.js";
 
 const getGeminiResponse = async (message) => {
 
@@ -11,6 +12,13 @@ const getGeminiResponse = async (message) => {
         },
 
         body: JSON.stringify({
+            systemInstruction: {
+                parts: [
+                    {
+                        text: NEXORA_IDENTITY_PROMPT
+                    }
+                ]
+            },
             contents: [
                 {
                     parts: [
