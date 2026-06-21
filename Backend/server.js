@@ -13,6 +13,16 @@ const PORT = process.env.PORT || 8080;
 app.use(express.json());
 app.use(cors());
 
+// Health Route
+app.get("/health", (req, res) => {
+    res.status(200).json({
+        status: "ok",
+        app: "Nexora AI",
+        uptime: process.uptime(),
+        timestamp: new Date().toISOString()
+    });
+});
+
 app.use("/api/auth", authRoutes);                  // public
 app.use("/api/thread", authMiddleware, threadRoutes); // protected
 app.use("/api/chat", authMiddleware, chatRoutes);     // protected
