@@ -352,7 +352,25 @@
     }
 
     .chat-window__profile-chip {
-        padding: 4px 8px 4px 4px;
+        padding: 0;
+        background: transparent;
+        border-color: transparent;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        height: auto;
+        gap: 0;
+    }
+
+    .chat-window__profile-chip:hover {
+        background: transparent;
+        border-color: transparent;
+        box-shadow: none;
+    }
+
+    .chat-window__profile-avatar {
+        width: 34px;
+        height: 34px;
+        font-size: 13px;
     }
 }
 

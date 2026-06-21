@@ -522,6 +522,21 @@
         backdrop-filter: blur(2px);
         animation: backdrop-fadein 0.22s ease;
     }
+
+    /* Remove outer glow ring from avatar on mobile */
+    .sidebar__avatar {
+        box-shadow: none;
+        border-radius: 9px;
+    }
+
+    /* Footer button full-width on mobile (sidebar always open) */
+    .sidebar--open .sidebar__footer-btn {
+        width: 100%;
+        height: 46px;
+        padding: 0 10px;
+        justify-content: flex-start;
+        border-radius: 12px;
+    }
 }
 
 @media (min-width: 769px) {
