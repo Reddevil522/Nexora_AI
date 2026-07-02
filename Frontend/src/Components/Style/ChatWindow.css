@@ -195,10 +195,10 @@
     transition: border-color 0.2s ease, background 0.2s ease;
 }
 
-.chat-window__input-box:focus-within {
+/* .chat-window__input-box:focus-within {
     border-color: var(--amber-line);
     background-color: var(--ink-3);
-}
+} */
 
 .chat-window__input-box--disabled {
     opacity: 0.5;
@@ -237,6 +237,11 @@
     cursor: pointer;
     flex-shrink: 0;
     transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.chat-window__send-btn:not(:disabled):not(.chat-window__send-btn--active):hover {
+    background: var(--ink-3);
+    color: var(--paper);
 }
 
 .chat-window__send-loader {

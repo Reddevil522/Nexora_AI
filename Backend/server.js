@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import chatRoutes from "./routes/chatRoutes.js";
 import threadRoutes from "./routes/threadRoutes.js";
 import authRoutes from "./routes/auth.js";
+import voiceRoutes from "./routes/voice.routes.js";
 import authMiddleware from "./middleware/authMiddleware.js";
 
 const app = express();
@@ -26,6 +27,7 @@ app.get("/health", (req, res) => {
 app.use("/api/auth", authRoutes);                  // public
 app.use("/api/thread", authMiddleware, threadRoutes); // protected
 app.use("/api/chat", authMiddleware, chatRoutes);     // protected
+app.use("/api/voice", authMiddleware, voiceRoutes);   // protected — voice chat
 
 // DATABASE CONNECTION
 const connectDB = async () => {

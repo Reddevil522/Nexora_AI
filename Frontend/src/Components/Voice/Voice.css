@@ -1,0 +1,59 @@
+/* Voice.css — Styling for the Voice Mode Inline UI */
+
+/* Status Text */
+.voice-status {
+    font-size: 16px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.9);
+    min-height: 24px;
+}
+
+/* Pulse animation when recording */
+.voice-pulse-ring {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(255, 77, 77, 0.4);
+    animation: pulse 1.5s infinite ease-out;
+    z-index: 1;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.8);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* Wave Animation (AI Speaking) */
+.voice-wave {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 60px;
+}
+
+.voice-wave-bar {
+    width: 8px;
+    background: #ff9d4d;
+    border-radius: 4px;
+    animation: wave 1s infinite ease-in-out;
+}
+
+.voice-wave-bar:nth-child(1) { height: 20px; animation-delay: 0.0s; }
+.voice-wave-bar:nth-child(2) { height: 40px; animation-delay: 0.1s; }
+.voice-wave-bar:nth-child(3) { height: 60px; animation-delay: 0.2s; }
+.voice-wave-bar:nth-child(4) { height: 40px; animation-delay: 0.3s; }
+.voice-wave-bar:nth-child(5) { height: 20px; animation-delay: 0.4s; }
+
+@keyframes wave {
+    0%, 100% { transform: scaleY(0.5); }
+    50% { transform: scaleY(1); }
+}
+
+/* Small ChatWindow Trigger Button - No longer needed as we use chat-window__send-btn */

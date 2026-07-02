@@ -9,6 +9,7 @@ import ChatWindow from "./Components/ChatWindow.jsx";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
+import { VoiceProvider } from "./context/VoiceContext.jsx";
 import "./App.css";
 
 function ChatApp() {
@@ -31,10 +32,12 @@ function ChatApp() {
 
   return (
     <MyContext.Provider value={providerValues}>
-      <div className="app">
-        <Sidebar />
-        <ChatWindow />
-      </div>
+      <VoiceProvider>
+        <div className="app">
+          <Sidebar />
+          <ChatWindow />
+        </div>
+      </VoiceProvider>
     </MyContext.Provider>
   );
 }

@@ -57,3 +57,7 @@
 .theme-toggle:hover .theme-toggle__icon {
     transform: rotate(15deg);
 }
+
+.micicon:hover {
+    background: var(--ink-3);
+}

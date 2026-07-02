@@ -8,6 +8,11 @@ import { chatService } from "../services/chatService.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { handleError } from "../utils/errorHandler.js";
 
+import VoiceButton from "./Voice/VoiceButton.jsx";
+import { useVoiceContext, VOICE_STATUS } from "../context/VoiceContext.jsx";
+import VoiceStatus from "./Voice/VoiceStatus.jsx";
+import VoiceWave from "./Voice/VoiceWave.jsx";
+
 /* ── Icon set (matches Home.jsx style) ── */
 const iconProps = { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round" };
 
@@ -47,6 +52,7 @@ function ChatWindow() {
     const [error, setError] = useState(null);
     const inputRef = useRef(null);
     const { user } = useAuth();
+    const { voiceStatus, voiceError } = useVoiceContext();
 
     // Send prompt to API and receive reply
     const getReply = useCallback(async () => {
@@ -94,8 +100,9 @@ function ChatWindow() {
 
     return (
         <div className="chat-window">
+            
             {/* ── Top Bar ── */}
-        <header className="chat-window__header">
+            <header className="chat-window__header">
                 {/* Hamburger — only visible on mobile */}
                 <button
                     className="chat-window__hamburger"
@@ -145,52 +152,32 @@ function ChatWindow() {
 
             {/* ── Input Area ── */}
             <footer className="chat-window__input-area">
-                {/* <div
-                    className={`chat-window__input-box ${loading ? "chat-window__input-box--disabled" : ""
-                        }`}
-                >
-                    <input
-                        ref={inputRef}
-                        className="chat-window__input"
-                        placeholder="Ask anything…"
-                        value={prompt}
-                        onChange={(e) => setPrompt(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                        disabled={loading}
-                        aria-label="Chat input"
-                        autoComplete="off"
-                    />
-                    <button
-                        className={`chat-window__send-btn ${prompt.trim() && !loading
-                            ? "chat-window__send-btn--active"
-                            : ""
-                            }`}
-                        onClick={getReply}
-                        disabled={!prompt.trim() || loading}
-                        aria-label="Send message"
-                    >
-                        <IconSend width={14} height={14} />
-                    </button>
-                </div> */}
-
-
-
-
                 <div
                     className={`chat-window__input-box ${loading ? "chat-window__input-box--disabled" : ""
                         }`}
                 >
-                    <input
-                        ref={inputRef}
-                        className="chat-window__input"
-                        placeholder="Ask anything…"
-                        value={prompt}
-                        onChange={(e) => setPrompt(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                        disabled={loading}
-                        aria-label="Chat input"
-                        autoComplete="off"
-                    />
+                    {voiceStatus !== VOICE_STATUS.IDLE || voiceError ? (
+                        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <VoiceStatus />
+                            <VoiceWave />
+                            {voiceError && <span style={{ color: '#ff4d4d', fontSize: '13.5px', marginLeft: 'auto' }}>{voiceError}</span>}
+                        </div>
+                    ) : (
+                        <input
+                            ref={inputRef}
+                            className="chat-window__input"
+                            placeholder="Ask anything…"
+                            value={prompt}
+                            onChange={(e) => setPrompt(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                            disabled={loading}
+                            aria-label="Chat input"
+                            autoComplete="off"
+                        />
+                    )}
+
+                    <VoiceButton />
+
                     {loading ? (
                         <div className="chat-window__send-loader" aria-label="Sending">
                             <ScaleLoader color="#ff9d4d" height={14} width={2} radius={2} margin={1.5} />
